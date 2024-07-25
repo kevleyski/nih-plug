@@ -31,6 +31,7 @@ members = [
   "plugins/examples/sine",
   "plugins/examples/stft",
   "plugins/examples/sysex",
+  "plugins/examples/kasm",
   "plugins/examples/kevs_vst",
 
   "plugins/soft_vacuum",

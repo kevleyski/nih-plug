@@ -68,10 +68,10 @@ impl Default for GainParams {
 }
 
 impl Plugin for Gain {
-    const NAME: &'static str = "Gain GUI (iced)";
-    const VENDOR: &'static str = "Moist Plugins GmbH";
+    const NAME: &'static str = "Kasm";
+    const VENDOR: &'static str = "Pyrmont Brewery";
     const URL: &'static str = "https://youtu.be/dQw4w9WgXcQ";
-    const EMAIL: &'static str = "info@example.com";
+    const EMAIL: &'static str = "music@pyrmontbrewery.com.au";
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 

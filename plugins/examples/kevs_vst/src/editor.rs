@@ -78,7 +78,7 @@ impl IcedEditor for GainEditor {
         Column::new()
             .align_items(Alignment::Center)
             .push(
-                Text::new("Gain GUI")
+                Text::new("Kevs Kasm")
                     .font(assets::NOTO_SANS_LIGHT)
                     .size(40)
                     .height(50.into())

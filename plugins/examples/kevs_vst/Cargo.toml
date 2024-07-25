@@ -1,0 +1,17 @@
+[package]
+name = "kevs_vst"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kev"]
+license = "ISC"
+
+description = "Kevs test using an exampleI"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+nih_plug = { path = "../../../", features = ["assert_process_allocs"] }
+nih_plug_iced = { path = "../../../nih_plug_iced" }
+
+atomic_float = "0.1"

@@ -1,10 +1,10 @@
-use std::sync::Arc;
+use std::sync::{Arc, LazyLock};
 
+use egui_baseview::egui::emath::GuiRounding;
 use egui_baseview::egui::{
     self, emath, vec2, Key, Response, Sense, Stroke, TextEdit, TextStyle, Ui, Vec2, Widget,
     WidgetText,
 };
-use lazy_static::lazy_static;
 use nih_plug::prelude::{Param, ParamSetter};
 use parking_lot::Mutex;
 
@@ -14,11 +14,10 @@ use super::util;
 /// noramlized parameter.
 const GRANULAR_DRAG_MULTIPLIER: f32 = 0.0015;
 
-lazy_static! {
-    static ref DRAG_NORMALIZED_START_VALUE_MEMORY_ID: egui::Id = egui::Id::new((file!(), 0));
-    static ref DRAG_AMOUNT_MEMORY_ID: egui::Id = egui::Id::new((file!(), 1));
-    static ref VALUE_ENTRY_MEMORY_ID: egui::Id = egui::Id::new((file!(), 2));
-}
+static DRAG_NORMALIZED_START_VALUE_MEMORY_ID: LazyLock<egui::Id> =
+    LazyLock::new(|| egui::Id::new((file!(), 0)));
+static DRAG_AMOUNT_MEMORY_ID: LazyLock<egui::Id> = LazyLock::new(|| egui::Id::new((file!(), 1)));
+static VALUE_ENTRY_MEMORY_ID: LazyLock<egui::Id> = LazyLock::new(|| egui::Id::new((file!(), 2)));
 
 /// A slider widget similar to [`egui::widgets::Slider`] that knows about NIH-plug parameters ranges
 /// and can get values for it. The slider supports double click and control click to reset,
@@ -212,7 +211,7 @@ impl<'a, P: Param> ParamSlider<'a, P> {
             self.reset_param();
             response.mark_changed();
         }
-        if response.drag_released() {
+        if response.drag_stopped() {
             self.end_drag();
         }
 
@@ -238,6 +237,7 @@ impl<'a, P: Param> ParamSlider<'a, P> {
                 response.rect,
                 0.0,
                 Stroke::new(1.0, ui.visuals().widgets.active.bg_fill),
+                egui::StrokeKind::Middle,
             );
         }
     }
@@ -293,9 +293,10 @@ impl<'a, P: Param> ParamSlider<'a, P> {
                     let stroke = visuals.bg_stroke;
                     ui.painter().rect(
                         response.rect.expand(visuals.expansion),
-                        visuals.rounding,
+                        visuals.corner_radius,
                         fill,
                         stroke,
+                        egui::StrokeKind::Middle,
                     );
                 }
 
@@ -325,7 +326,7 @@ impl<P: Param> Widget for ParamSlider<'_, P> {
             let height = ui
                 .text_style_height(&TextStyle::Body)
                 .max(ui.spacing().interact_size.y * 0.8);
-            let slider_height = ui.painter().round_to_pixel(height * 0.8);
+            let slider_height = (height * 0.8).round_to_pixels(ui.painter().pixels_per_point());
             let mut response = ui
                 .vertical(|ui| {
                     ui.allocate_space(vec2(slider_width, (height - slider_height) / 2.0));
